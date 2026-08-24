@@ -1,21 +1,5 @@
 const express = require('express');
 
-// const mysql = require('mysql');
-
-// const con = mysql.createConnection({
-//     user: 'root',
-//     password: '',
-//     database: 'foodlist',
-//     host: '127.0.0.1'
-// })
-
-// con.connect((error)=>{
-//     if (error) throw error;
-//     else{
-//         console.log('MySQL Database is connected');
-//     }
-// })
-
 const mysql = require('mysql');
 
 const con = mysql.createConnection({
@@ -47,6 +31,7 @@ app.get('/', (req,res)=>{
     res.send (`<h1>Node js + MySQL</h1>`)
 })
 
+// Get all foods 
 app.get('/api/foods', (req, res) => {
     var SQL = 'SELECT * FROM food';
     con.query(SQL, (error, result) => {
@@ -57,27 +42,28 @@ app.get('/api/foods', (req, res) => {
     })
 })
 
+// Get foods by ID 
 app.get('/api/food/:id', (req, res) => {
-    const id = req.params.id;
+    var SQL = `SELECT * FROM food where food_Id=${req.params.id}`
 
-    const SQL = 'SELECT * FROM food WHERE id = ?';
+    con.query(SQL, (error, foodInfo) => {
+        if (error) throw error;
+        else {
+            // res.status(200).json({'info': foodInfo})
+            if (!foodInfo.length) {
+                res.status(200).json({'message': 'No such records found..!'})
+            }
+            else {
+                // res.status(200).json({'info': foodInfo})
+                foodInfo.forEach((food) => {
+                    res.status(200).json(food);
+                })
+            }
+        }           
+    })
+})
 
-    con.query(SQL, [id], (error, result) => {
-        if (error) {
-            return res.status(500).json({
-                message: 'Database error'
-            });
-        }
 
-        if (result.length === 0) {
-            return res.status(404).json({
-                message: 'Food not found'
-            });
-        }
-
-        res.status(200).json(result[0]);
-    });
-});
 
 app.listen(port,()=>{
     console.log(`Server is started at ${port}`);
