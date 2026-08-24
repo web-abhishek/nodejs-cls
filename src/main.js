@@ -63,7 +63,25 @@ app.get('/api/food/:id', (req, res) => {
     })
 })
 
+// Add foods using POST Method
+app.post('/api/food', (req, res) => {
+    var SQL = `INSERT INTO food(food_name,food_desc, food_price)
+    values('${req.body.food_name}', '${req.body.food_desc}', '${req.body.food_price}')`
 
+    con.query(SQL, (error, foodData) => {
+        if (error) {
+            res.status(200).json({'message': error.sqlMessage})
+        } else {
+            // res.status(200).json({'info': foodData})
+            if (foodData.affectedRows == 1) {
+                res.status(200).json({'msg': 'One food Item added successfully..!'})
+            }
+            else {
+                res.status(200).json({'msg': 'Something went wrong..!'})
+            }
+        }
+    })
+})
 
 app.listen(port,()=>{
     console.log(`Server is started at ${port}`);
