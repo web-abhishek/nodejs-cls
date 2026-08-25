@@ -5,6 +5,7 @@ const mysql = require('mysql');
 // db connection code here
 
 const foodRouter = require('../route/food.route')
+const userRouter = require('../route/user.route')
 
 const cors = require('cors');
 
@@ -18,12 +19,13 @@ app.use(express.urlencoded({extended:true}));
 app.use(express.json());
 
 app.use('/api', foodRouter);
+app.use('/api', userRouter);
 
 app.get('/', (req,res)=>{
     res.send (`<h1>Node js + MySQL</h1>`)
 })
 
-// all http methods code here
+// all http-methods code here
 
 app.listen(port,()=>{
     console.log(`Server is started at ${port}`);
